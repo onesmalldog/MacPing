@@ -1,12 +1,14 @@
 //
-//  SimplePingHerper.m
+//  SimplePingHelper.m
 //  PingServer
 //
 //  Created by YourtionGuo on 12/22/15.
 //  Copyright © 2015 Yourtion. All rights reserved.
 //
 
-#import "SimplePingHerper.h"
+#import "SimplePingHelper.h"
+#include <sys/socket.h>
+#include <netdb.h>
 
 #pragma mark * Utilities
 
@@ -31,8 +33,13 @@ static NSString * DisplayAddressForAddress(NSData * address)
     return result;
 }
 
+@interface SimplePingHelper()<SimplePingDelegate>
 
-@implementation SimplePingHerper
+@property (nonatomic, strong, readwrite) SimplePing *   pinger;
+@property (nonatomic, strong, readwrite) NSTimer *      sendTimer;
+@end
+
+@implementation SimplePingHelper
 
 @synthesize pinger    = _pinger;
 @synthesize sendTimer = _sendTimer;

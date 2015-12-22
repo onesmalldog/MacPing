@@ -15,7 +15,7 @@
 		CB9A9D071C2929E80084E2CD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB9A9D061C2929E70084E2CD /* Foundation.framework */; };
 		CB9A9D091C292BC80084E2CD /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB9A9D081C292BC80084E2CD /* CoreServices.framework */; };
 		CB9A9D0C1C292BEA0084E2CD /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9A9D0B1C292BEA0084E2CD /* SimplePing.m */; };
-		CB9A9D0F1C292EDD0084E2CD /* SimplePingHerper.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9A9D0E1C292EDD0084E2CD /* SimplePingHerper.m */; };
+		CB9A9D0F1C292EDD0084E2CD /* SimplePingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9A9D0E1C292EDD0084E2CD /* SimplePingHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,8 +32,8 @@
 		CB9A9D081C292BC80084E2CD /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		CB9A9D0A1C292BEA0084E2CD /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimplePing.h; sourceTree = "<group>"; };
 		CB9A9D0B1C292BEA0084E2CD /* SimplePing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimplePing.m; sourceTree = "<group>"; };
-		CB9A9D0D1C292EDD0084E2CD /* SimplePingHerper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimplePingHerper.h; sourceTree = "<group>"; };
-		CB9A9D0E1C292EDD0084E2CD /* SimplePingHerper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimplePingHerper.m; sourceTree = "<group>"; };
+		CB9A9D0D1C292EDD0084E2CD /* SimplePingHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimplePingHelper.h; sourceTree = "<group>"; };
+		CB9A9D0E1C292EDD0084E2CD /* SimplePingHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimplePingHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,10 +70,7 @@
 		CB9A9CDB1C2923E30084E2CD /* PingServer */ = {
 			isa = PBXGroup;
 			children = (
-				CB9A9D0A1C292BEA0084E2CD /* SimplePing.h */,
-				CB9A9D0B1C292BEA0084E2CD /* SimplePing.m */,
-				CB9A9D0D1C292EDD0084E2CD /* SimplePingHerper.h */,
-				CB9A9D0E1C292EDD0084E2CD /* SimplePingHerper.m */,
+				CB9A9D101C29316E0084E2CD /* SimplePing */,
 				CB9A9CDC1C2923E30084E2CD /* AppDelegate.h */,
 				CB9A9CDD1C2923E30084E2CD /* AppDelegate.m */,
 				CB9A9CE21C2923E30084E2CD /* ViewController.h */,
@@ -92,6 +89,17 @@
 				CB9A9CE01C2923E30084E2CD /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CB9A9D101C29316E0084E2CD /* SimplePing */ = {
+			isa = PBXGroup;
+			children = (
+				CB9A9D0A1C292BEA0084E2CD /* SimplePing.h */,
+				CB9A9D0B1C292BEA0084E2CD /* SimplePing.m */,
+				CB9A9D0D1C292EDD0084E2CD /* SimplePingHelper.h */,
+				CB9A9D0E1C292EDD0084E2CD /* SimplePingHelper.m */,
+			);
+			name = SimplePing;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,7 +175,7 @@
 				CB9A9CE11C2923E30084E2CD /* main.m in Sources */,
 				CB9A9CDE1C2923E30084E2CD /* AppDelegate.m in Sources */,
 				CB9A9D0C1C292BEA0084E2CD /* SimplePing.m in Sources */,
-				CB9A9D0F1C292EDD0084E2CD /* SimplePingHerper.m in Sources */,
+				CB9A9D0F1C292EDD0084E2CD /* SimplePingHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

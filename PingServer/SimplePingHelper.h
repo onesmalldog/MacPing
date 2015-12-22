@@ -1,5 +1,5 @@
 //
-//  SimplePingHerper.h
+//  SimplePingHelper.h
 //  PingServer
 //
 //  Created by YourtionGuo on 12/22/15.
@@ -12,10 +12,8 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-@interface SimplePingHerper : NSObject <SimplePingDelegate>
+@interface SimplePingHelper : NSObject <SimplePingDelegate>
 - (void)runWithHostName:(NSString *)hostName;
 
-@property (nonatomic, strong, readwrite) SimplePing *   pinger;
-@property (nonatomic, strong, readwrite) NSTimer *      sendTimer;
 
 @end
