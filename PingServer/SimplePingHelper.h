@@ -12,8 +12,10 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
+typedef void (^SimplePingCallback) (BOOL succeed,NSTimeInterval time);
+
 @interface SimplePingHelper : NSObject <SimplePingDelegate>
 @property (nonatomic) NSInteger interval;
-+ (void)ping:(NSString*)address;
-+ (void)ping:(NSString*)address interval:(NSInteger)interval;
++ (void)ping:(NSString*)address callback:(SimplePingCallback)callback;
++ (void)ping:(NSString*)address interval:(NSInteger)interval callback:(SimplePingCallback)callback;
 @end
