@@ -34,9 +34,9 @@ static NSString * DisplayAddressForAddress(NSData * address)
 }
 
 @interface SimplePingHelper()<SimplePingDelegate>
-
-@property (nonatomic, strong, readwrite) SimplePing *   pinger;
-@property (nonatomic, strong, readwrite) NSTimer *      sendTimer;
+@property (nonatomic, strong) SimplePing *   pinger;
+@property (nonatomic, strong) NSTimer *      sendTimer;
+@property (nonatomic, strong) NSDate *       start;
 @end
 
 @implementation SimplePingHelper
@@ -111,11 +111,24 @@ static NSString * DisplayAddressForAddress(NSData * address)
     } while (self.pinger != nil);
 }
 
++ (void)ping:(NSString*)address {
+    [SimplePingHelper ping:address interval:1];
+}
+
++ (void)ping:(NSString*)address interval:(NSInteger)interval {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
+        SimplePingHelper *helper = [[SimplePingHelper alloc] init];
+        helper.interval = interval;
+        [helper runWithHostName:address];
+    });
+}
 - (void)sendPing
 // Called to send a ping, both directly (as soon as the SimplePing object starts up)
 // and via a timer (to continue sending pings periodically).
 {
     assert(self.pinger != nil);
+    self.start = [NSDate date];
     [self.pinger sendPingWithData:nil];
 }
 
@@ -136,7 +149,8 @@ static NSString * DisplayAddressForAddress(NSData * address)
     // And start a timer to send the subsequent pings.
     
     assert(self.sendTimer == nil);
-    self.sendTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(sendPing) userInfo:nil repeats:YES];
+    NSInteger interval = self.interval ? : 1.0;
+    self.sendTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(sendPing) userInfo:nil repeats:YES];
 }
 
 - (void)simplePing:(SimplePing *)pinger didFailWithError:(NSError *)error
@@ -182,7 +196,9 @@ static NSString * DisplayAddressForAddress(NSData * address)
 #pragma unused(pinger)
     assert(pinger == self.pinger);
 #pragma unused(packet)
-    NSLog(@"#%u received", (unsigned int) OSSwapBigToHostInt16([SimplePing icmpInPacket:packet]->sequenceNumber) );
+    NSLog(@"%@ #%u received", pinger.hostName ,(unsigned int) OSSwapBigToHostInt16([SimplePing icmpInPacket:packet]->sequenceNumber) );
+    NSTimeInterval time = [self.start timeIntervalSinceNow];
+    NSLog(@"%@  time : %f ms", pinger.hostName ,time * -1000);
 }
 
 - (void)simplePing:(SimplePing *)pinger didReceiveUnexpectedPacket:(NSData *)packet

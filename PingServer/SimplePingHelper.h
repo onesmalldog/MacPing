@@ -13,7 +13,7 @@
 #include <netdb.h>
 
 @interface SimplePingHelper : NSObject <SimplePingDelegate>
-- (void)runWithHostName:(NSString *)hostName;
-
-
+@property (nonatomic) NSInteger interval;
++ (void)ping:(NSString*)address;
++ (void)ping:(NSString*)address interval:(NSInteger)interval;
 @end
