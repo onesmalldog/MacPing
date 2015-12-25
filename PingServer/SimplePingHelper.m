@@ -35,7 +35,6 @@ static NSString * DisplayAddressForAddress(NSData * address)
 
 @interface SimplePingHelper()<SimplePingDelegate>
 @property (nonatomic, strong) SimplePing *   pinger;
-@property (nonatomic, strong) NSTimer *      sendTimer;
 @property (nonatomic, strong) NSDate *       start;
 @property (nonatomic, copy) void (^callbackHandler)(BOOL succeed,NSTimeInterval time);
 @end
@@ -43,12 +42,10 @@ static NSString * DisplayAddressForAddress(NSData * address)
 @implementation SimplePingHelper
 
 @synthesize pinger    = _pinger;
-@synthesize sendTimer = _sendTimer;
 
 - (void)dealloc
 {
     [self->_pinger stop];
-    [self->_sendTimer invalidate];
 }
 
 - (NSString *)shortErrorFromError:(NSError *)error
@@ -106,25 +103,20 @@ static NSString * DisplayAddressForAddress(NSData * address)
     
     self.pinger.delegate = self;
     [self.pinger start];
-    
     do {
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
     } while (self.pinger != nil);
 }
 
 + (void)ping:(NSString*)address callback:(SimplePingCallback)callback{
-    [SimplePingHelper ping:address interval:1 callback:callback];
-}
-
-+ (void)ping:(NSString*)address interval:(NSInteger)interval callback:(SimplePingCallback)callback{
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         SimplePingHelper *helper = [[SimplePingHelper alloc] init];
         helper.callbackHandler = callback;
-        helper.interval = interval;
         [helper runWithHostName:address];
     });
 }
+
 - (void)sendPing
 // Called to send a ping, both directly (as soon as the SimplePing object starts up)
 // and via a timer (to continue sending pings periodically).
@@ -133,6 +125,7 @@ static NSString * DisplayAddressForAddress(NSData * address)
     self.start = [NSDate date];
     [self.pinger sendPingWithData:nil];
 }
+
 
 - (void)simplePing:(SimplePing *)pinger didStartWithAddress:(NSData *)address
 // A SimplePing delegate callback method.  We respond to the startup by sending a
@@ -145,14 +138,7 @@ static NSString * DisplayAddressForAddress(NSData * address)
     NSLog(@"pinging %@", DisplayAddressForAddress(address));
     
     // Send the first ping straight away.
-    
     [self sendPing];
-    
-    // And start a timer to send the subsequent pings.
-    
-    assert(self.sendTimer == nil);
-    NSInteger interval = self.interval ? : 1.0;
-    self.sendTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(sendPing) userInfo:nil repeats:YES];
 }
 
 - (void)simplePing:(SimplePing *)pinger didFailWithError:(NSError *)error
@@ -164,12 +150,11 @@ static NSString * DisplayAddressForAddress(NSData * address)
 #pragma unused(error)
     NSLog(@"failed: %@", [self shortErrorFromError:error]);
     
-    [self.sendTimer invalidate];
-    self.sendTimer = nil;
-    
     // No need to call -stop.  The pinger will stop itself in this case.
     // We do however want to nil out pinger so that the runloop stops.
     
+    
+    if (self.callbackHandler != nil) self.callbackHandler(NO,-1);
     self.pinger = nil;
 }
 
@@ -191,6 +176,9 @@ static NSString * DisplayAddressForAddress(NSData * address)
 #pragma unused(error)
     
     NSLog(@"#%u send failed: %@", (unsigned int) OSSwapBigToHostInt16(((const ICMPHeader *) [packet bytes])->sequenceNumber), [self shortErrorFromError:error]);
+    
+    if (self.callbackHandler != nil) self.callbackHandler(NO,-1);
+    self.pinger = nil;
 }
 
 - (void)simplePing:(SimplePing *)pinger didReceivePingResponsePacket:(NSData *)packet
@@ -203,6 +191,7 @@ static NSString * DisplayAddressForAddress(NSData * address)
     NSTimeInterval time = [self.start timeIntervalSinceNow] * -1000;
     NSLog(@"%@  time : %f ms", pinger.hostName ,time);
     if (self.callbackHandler != nil) self.callbackHandler(YES,time);
+    self.pinger = nil;
 }
 
 - (void)simplePing:(SimplePing *)pinger didReceiveUnexpectedPacket:(NSData *)packet
@@ -221,6 +210,7 @@ static NSString * DisplayAddressForAddress(NSData * address)
         NSLog(@"unexpected packet size=%zu", (size_t) [packet length]);
     }
     if (self.callbackHandler != nil) self.callbackHandler(NO,-1);
+    self.pinger = nil;
 }
 
 @end
