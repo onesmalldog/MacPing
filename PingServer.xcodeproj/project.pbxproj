@@ -315,6 +315,7 @@
 				CB9A9CEF1C2923E30084E2CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
